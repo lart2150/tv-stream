@@ -1,0 +1,17 @@
+{
+    "extends": [
+        "eslint-config-dasprid/react",
+        "plugin:react/jsx-runtime"
+    ],
+    "parserOptions": {
+        "project": "tsconfig.eslint.json"
+    },
+    "rules": {
+        "react/prop-types": "off"
+    },
+    "settings": {
+        "import/resolver": {
+            "typescript": {}
+        }
+    }
+}
