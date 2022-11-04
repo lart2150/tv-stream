@@ -7,6 +7,8 @@ import {ThemeProvider} from '@mui/material/styles';
 import {StrictMode} from 'react';
 import {render} from 'react-dom';
 import App from './App';
+import { AuthProvider } from './components/AuthProvider';
+import { TivoContextComponent } from './components/TivoContext';
 
 const theme = createTheme();
 
@@ -14,8 +16,12 @@ render(
     (
         <StrictMode>
             <ThemeProvider theme={theme}>
-                <CssBaseline/>
-                <App/>
+                <TivoContextComponent>
+                    <CssBaseline/>
+                    <AuthProvider>
+                        <App/>
+                    </AuthProvider>
+                </TivoContextComponent>
             </ThemeProvider>
         </StrictMode>
     ),

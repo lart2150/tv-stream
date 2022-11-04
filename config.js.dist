@@ -1,0 +1,6 @@
+{
+    "domain":"dev-tx5pm-yb.us.auth0.com",
+    "clientID":"RSrCyJEYSHz7DQfIbEdmVuSlAqJE9p0p",
+    "audience":"https://test.com",
+    "apiBaseUrl":"http://localhost:8000"
+}

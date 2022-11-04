@@ -3,3 +3,4 @@
 npm-debug.log*
 .eslintcache
 /stats.html
+/config.js
