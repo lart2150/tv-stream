@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography';
 import { forwardRef, ReactElement, Ref, useContext, useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 
-import type { MyShows, Recording } from '@/types/Tivo';
+import type { Channel } from '@/types/Tivo';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,7 +19,7 @@ import type videojs from 'video.js';
 type Props = {
     openState : boolean;
     close : () => void;
-    recording : Recording | null;
+    channel : Channel | null;
 }
 
 type Stream = {
@@ -45,7 +45,7 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-const Playback = ({openState, close, recording} : Props) : JSX.Element => {
+const ChannelComponent = ({openState, close, channel} : Props) : JSX.Element => {
     const [stream, setStream] = useState<Stream|null>(null);
     const fetch = useFetch();
     const context = useContext(tivoContext);
@@ -55,11 +55,11 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
         return await fetch(`/stream/stop/${encodeURIComponent(hlsSessionId)}`);
     }
 
-    const getSession = async (recordingId : string) => {
+    const getSession = async (stbChannelId : string) => {
         if (stream && stream.hlsSession?.hlsSessionId) {
             clearSession(stream.hlsSession?.hlsSessionId);
         }
-        const rsp = await fetch(`/stream/start/${encodeURIComponent(recordingId)}`)
+        const rsp = await fetch(`/stream/startChannel/${encodeURIComponent(stbChannelId)}`)
         const strm = await rsp.json();
         return strm;
     }
@@ -73,8 +73,9 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
     }
 
     useEffect(() => {
-        if (recording?.recordingId) {
-            getSession(recording?.recordingId).then((newStream) => {
+        if (channel?.stbChannelId) {
+            getSession(channel?.stbChannelId).then(async (newStream) => {
+                await new Promise(r => setTimeout(r, 2000));
                 setStream(newStream);
             });
         }
@@ -85,12 +86,10 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
             }
             clearSession(stream.hlsSession?.hlsSessionId);
           }
-    }, [recording]);
-    if (!recording) {
+    }, [channel]);
+    if (!channel) {
         return <></>;
     }
-    const episode = recording.episodeNum?.length > 0 ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : ``;
-    const secondary = `${episode}${recording.subtitle}`;
     return (
         <Dialog
         fullScreen
@@ -109,12 +108,11 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {recording?.shortTitle}
+              {channel.affiliate}
             </Typography>
           </Toolbar>
         </AppBar>
         <Container maxWidth="lg">
-            <Typography variant="h3">{recording?.shortTitle} {episode} - {secondary}</Typography>
             {stream && stream.hlsSession?.playlistUri && (
                 <>
                 <VideoJS
@@ -129,26 +127,6 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
                         playbackRates: [
                             0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5
                         ],
-                        liveui: true,
-                        userActions : {
-                            hotkeys: function(event) {
-                                console.log('this', this);
-                                const player = this as videojs.Player;
-                                switch (event.code) {
-                                    case 'space':
-                                        player.pause();
-                                        break;
-                                    case 'ArrowLeft':
-                                        player.currentTime(player.currentTime() - 30);
-                                        break;
-                                    case 'ArrowRight':
-                                        player.currentTime(player.currentTime() + 30);
-                                        break;
-                                }
-                                console.log('which', event.which);
-                                console.log('event', event);
-                            }
-                        }
                     }}
                 />
             </>)}
@@ -157,7 +135,6 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
                     <span>{stream.errorCode}</span>
                 </>
             )}
-            <Typography>{recording.description}</Typography>
             <Button 
                 variant="contained"
                 onClick={closeWindow}
@@ -169,4 +146,4 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
 };
 
 
-export default Playback;
+export default ChannelComponent;

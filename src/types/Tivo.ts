@@ -26,3 +26,24 @@ export type MyShows = {
     IsFinal : boolean;
     isBottom : boolean;
 }
+
+export type Channel = {
+    affiliate: string;
+    callSign: string;
+    channelId: string;
+    channelNumber: string;
+    isKidZone: boolean;
+    isReceived: boolean;
+    name: string;
+    sourceType: string;
+    stationId: string;
+    isDigital ?: boolean;
+    logoIndex ?: number;
+    isBlocked: boolean;
+    objectIdAndType: string;
+    isHdtv: boolean;
+    isEntitled: boolean;
+    videoResolution: string;
+    type: string;
+    stbChannelId: string;
+}
