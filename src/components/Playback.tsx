@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography';
-import { forwardRef, ReactElement, Ref, useEffect, useState } from 'react';
+import { forwardRef, ReactElement, Ref, useContext, useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 
 import type { MyShows, Recording } from '@/types/Tivo';
@@ -13,6 +13,7 @@ import Slide from '@mui/material/Slide';
 import VideoJS from './VideoJS';
 import Container from '@mui/material/Container';
 import { useFetch } from '@/util/api';
+import { tivoContext } from './TivoContext';
 
 type Props = {
     openState : boolean;
@@ -46,6 +47,7 @@ const Transition = forwardRef(function Transition(
 const Playback = ({openState, close, recording} : Props) : JSX.Element => {
     const [stream, setStream] = useState<Stream|null>(null);
     const fetch = useFetch();
+    const context = useContext(tivoContext);
 
         
     const clearSession = async (hlsSessionId : string) => {
@@ -120,7 +122,7 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
                         preload: 'auto',
                         autoplay: true,
                         sources : [{
-                            src: `${stream.hlsSession.playlistUri}`,
+                            src: `${(context?.apiBaseUrl ?? '') + stream.hlsSession.playlistUri}`,
                             type: 'application/x-mpegURL'
                         }]
                     }}
