@@ -1,4 +1,4 @@
-import { Output } from '@mui/icons-material';
+import {Output} from '@mui/icons-material';
 import react from '@vitejs/plugin-react';
 import {visualizer} from 'rollup-plugin-visualizer';
 import {defineConfig} from 'vite';
@@ -26,6 +26,6 @@ export default defineConfig({
             '^/session-streaming/.*': {
                 target: 'http://localhost:8000',
             },
-        }
-    }
+        },
+    },
 });

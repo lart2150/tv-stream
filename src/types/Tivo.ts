@@ -3,7 +3,7 @@ export type Recording = {
     isNew : boolean;
     shortTitle : string;
     subtitle : string;
-    description: string;
+    description : string;
     seasonNumber : number;
 
     collectionTitle : string;
@@ -16,7 +16,7 @@ export type Recording = {
     isEpisode : boolean;
 
     duration : number;
-    hdtv: boolean;
+    hdtv : boolean;
     size : number;
 
     actualStartTime : string;
@@ -33,7 +33,7 @@ export type Recording = {
         recordingPlaybackPolicy : string;
         tivoToGo : boolean;
         type : string;
-    }
+    };
 };
 
 export type MyShows = {
@@ -42,25 +42,25 @@ export type MyShows = {
     type : string;
     IsFinal : boolean;
     isBottom : boolean;
-}
+};
 
 export type Channel = {
-    affiliate: string;
-    callSign: string;
-    channelId: string;
-    channelNumber: string;
-    isKidZone: boolean;
-    isReceived: boolean;
-    name: string;
-    sourceType: string;
-    stationId: string;
+    affiliate : string;
+    callSign : string;
+    channelId : string;
+    channelNumber : string;
+    isKidZone : boolean;
+    isReceived : boolean;
+    name : string;
+    sourceType : string;
+    stationId : string;
     isDigital ?: boolean;
     logoIndex ?: number;
-    isBlocked: boolean;
-    objectIdAndType: string;
-    isHdtv: boolean;
-    isEntitled: boolean;
-    videoResolution: string;
-    type: string;
-    stbChannelId: string;
-}
+    isBlocked : boolean;
+    objectIdAndType : string;
+    isHdtv : boolean;
+    isEntitled : boolean;
+    videoResolution : string;
+    type : string;
+    stbChannelId : string;
+};

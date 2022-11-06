@@ -1,6 +1,7 @@
-import { Auth0Provider } from "@auth0/auth0-react";
-import { ReactNode, useContext } from "react";
-import { tivoContext } from "./TivoContext";
+import {Auth0Provider} from '@auth0/auth0-react';
+import type {ReactNode} from 'react';
+import {useContext} from 'react';
+import {tivoContext} from './TivoContext';
 
 type Props = {
     children : ReactNode;
@@ -10,7 +11,7 @@ export const AuthProvider = ({children} : Props) => {
     const context = useContext(tivoContext);
 
     if (!context) {
-        return <>Loading config...</>
+        return <>Loading config...</>;
     }
 
     return <Auth0Provider
@@ -20,5 +21,5 @@ export const AuthProvider = ({children} : Props) => {
         audience={context.audience}
     >
         {children}
-    </Auth0Provider>
-}
+    </Auth0Provider>;
+};

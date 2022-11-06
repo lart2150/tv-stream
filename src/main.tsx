@@ -7,8 +7,8 @@ import {ThemeProvider} from '@mui/material/styles';
 import {StrictMode} from 'react';
 import {render} from 'react-dom';
 import App from './App';
-import { AuthProvider } from './components/AuthProvider';
-import { TivoContextComponent } from './components/TivoContext';
+import {AuthProvider} from './components/AuthProvider';
+import {TivoContextComponent} from './components/TivoContext';
 
 const theme = createTheme();
 
