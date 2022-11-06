@@ -7,7 +7,7 @@ export type Recording = {
     seasonNumber : number;
 
     collectionTitle : string;
-    episodeNum : string[];
+    episodeNum ?: string[];
     bodyId : string;
     collectionId : string;
     recordingId : string;

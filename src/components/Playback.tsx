@@ -94,7 +94,7 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
         return <></>;
     }
 
-    const episode = recording.episodeNum.length > 0 ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : '';
+    const episode = recording.episodeNum !== undefined ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : '';
     const secondary = `${episode}${recording.subtitle}`;
     return (
         <Dialog

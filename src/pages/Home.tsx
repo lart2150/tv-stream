@@ -68,11 +68,9 @@ const Home = () : JSX.Element => {
             const allChannels = await rec.json();
             const channelList = allChannels.channel as Channel[];
             setChannels(channelList.filter(c => c.isReceived));
-            console.log('channels', channelList.filter(c => c.isReceived));
         });
     }, []);
 
-    console.log('uniqueCollections', uniqueCollections);
     return (
         <>
             <Container maxWidth="lg">
@@ -103,7 +101,7 @@ const Home = () : JSX.Element => {
                                 <List>
                                     {collectionRecordings.map(recording => {
                                         const recordingStart = new Date(recording.scheduledStartTime).toLocaleString();
-                                        const episode = recording.episodeNum.length > 0 ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : '';
+                                        const episode = recording.episodeNum?.length !== undefined ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : '';
                                         const secondary = `${episode}${recording.subtitle}`;
                                         return <ListItem disablePadding key={recording.recordingId}>
                                             <ListItemButton

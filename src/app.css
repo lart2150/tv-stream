@@ -1,0 +1,18 @@
+button.vjs-seek-button.skip-back {
+    font-family: VideoJS;
+    font-weight: normal;
+    font-style: normal; 
+    cursor: pointer;
+}
+button.vjs-seek-button.skip-back :before {
+    content: "\f11b"; }
+  
+button.vjs-seek-button.skip-forward {
+    font-family: VideoJS;
+    font-weight: normal;
+    font-style: normal; 
+    cursor: pointer;
+}
+button.vjs-seek-button.skip-forward :before {
+    content: "\f121"; 
+}

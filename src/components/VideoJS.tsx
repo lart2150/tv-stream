@@ -1,18 +1,20 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import videojs from 'video.js';
+import seekButtons from 'videojs-seek-buttons';
 import 'video.js/dist/video-js.css';
+import 'videojs-font/css/videojs-icons.css';
 
 type Props = {
     options : videojs.PlayerOptions;
     onReady ?: (player : videojs.Player) => void;
 };
 
-export const VideoJS = (props : Props) => {
-    const videoRef = React.useRef<HTMLVideoElement>(null);
-    const playerRef = React.useRef<videojs.Player | null>(null);
+const VideoJS = (props : Props) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const playerRef = useRef<videojs.Player | null>(null);
     const {options, onReady} = props;
 
-    React.useEffect(() => {
+    useEffect(() => {
         // Make sure Video.js player is only initialized once
         if (!playerRef.current) {
             const videoElement = videoRef.current;
@@ -24,8 +26,12 @@ export const VideoJS = (props : Props) => {
                 onReady && onReady(player);
             });
 
-            // You could update an existing player in the `else` block here
-            // on prop change, for example:
+            if (options.liveui) {
+              player.seekButtons({
+                forward: 30,
+                back: 10
+              })
+            }
         } else {
             // const player = playerRef.current;
 
@@ -35,7 +41,7 @@ export const VideoJS = (props : Props) => {
     }, [options, videoRef]);
 
     // Dispose the Video.js player when the functional component unmounts
-    React.useEffect(() => {
+    useEffect(() => {
         const player = playerRef.current;
 
         return () => {
@@ -53,7 +59,7 @@ export const VideoJS = (props : Props) => {
                 style={{
                     width: '100%',
                 }}
-                className='video-js vjs-big-play-centered'
+                className='video-js vjs-big-play-centered vjs-fluid'
             />
         </div>
     );
