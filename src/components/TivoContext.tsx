@@ -25,7 +25,7 @@ const fetchValidator = z.object({
 export const TivoContextComponent = ({children} : Props) => {
     const [ctx, setCtx] = useState<TivoContextType|null>(null);
     useEffect(() => {
-        fetch('config.js').then(rsp => {
+        fetch('config.json').then(rsp => {
                 rsp.json().then( data => {
                     console.log('data', data);
                     const validatedData = fetchValidator.parse(data)

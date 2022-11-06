@@ -1,11 +1,10 @@
 export type Recording = {
     episodic : boolean;
+    isNew : boolean;
     shortTitle : string;
     subtitle : string;
     description: string;
-
     seasonNumber : number;
-
 
     collectionTitle : string;
     episodeNum : string[];
@@ -13,10 +12,28 @@ export type Recording = {
     collectionId : string;
     recordingId : string;
     contentId : string;
+    originalAirdate : string;
+    isEpisode : boolean;
+
+    duration : number;
+    hdtv: boolean;
+    size : number;
 
     actualStartTime : string;
     actualEndTime : string;
+    scheduledStartTime : string;
+    scheduledEndTime : string;
+    startTime : string;
 
+    drm : {
+        cgms : string;
+        mrsPlaybackPolicy : string;
+        multiRoomStream : boolean;
+        multiRoomView : boolean;
+        recordingPlaybackPolicy : string;
+        tivoToGo : boolean;
+        type : string;
+    }
 };
 
 export type MyShows = {

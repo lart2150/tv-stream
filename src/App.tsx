@@ -1,12 +1,13 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import React from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Layout from './Layout';
-import Home from './pages/Home';
+
+const Home = lazy(() => import('@/pages/Home'));
 
 const App = () : JSX.Element => {
     const { loginWithRedirect, isAuthenticated, isLoading} = useAuth0();
-    React.useEffect(() => {
+    useEffect(() => {
         if (!isAuthenticated && !isLoading) {
             loginWithRedirect();
         }
@@ -20,7 +21,7 @@ const App = () : JSX.Element => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Layout/>}>
-                    <Route index element={<Home/>}/>
+                    <Route index element={<Suspense fallback={<div>loading...</div>}><Home/></Suspense>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

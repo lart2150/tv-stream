@@ -3,10 +3,16 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import type { Channel, Recording } from '@/types/Tivo';
 import { useFetch } from '@/util/api';
 import { lazy, useEffect, useState, Suspense} from 'react';
-import { Box, Tabs, Tab} from '@mui/material';
+import { Box, Tabs, Tab, Chip} from '@mui/material';
+import Container from '@mui/system/Container';
 
 const Playback = lazy(() => import('@/components/Playback'));
 const ChannelComponent = lazy(() => import('@/components/ChannelComponent'));
@@ -39,6 +45,7 @@ function TabPanel(props: TabPanelProps) {
 
 const Home = () : JSX.Element => {
     const [recordings, setRecordings] = useState<Recording[]>([]);
+    const [uniqueCollections, setUniqueCollections] = useState<Recording[]>([]);
     const [channels, setChannels] = useState<Channel[]>([]);
     const [selectedRecording, setSelectedRecording] = useState<Recording|null>(null);
     const [selectedChannel, setSelectedChannel] = useState<Channel|null>(null);
@@ -53,7 +60,9 @@ const Home = () : JSX.Element => {
 
     useEffect(() => {
         fetch('/getMyShows').then(async (rec) => {
-            setRecordings(await rec.json());
+            const rawRecordings = await rec.json() as Recording[];
+            setUniqueCollections(rawRecordings.filter((r, i) => rawRecordings.findIndex(or => or.collectionId === r.collectionId) === i));
+            setRecordings(rawRecordings);
         });
         fetch('/getMyLineup').then(async (rec) => {
             const allChannels = await rec.json();
@@ -63,67 +72,86 @@ const Home = () : JSX.Element => {
         });
     },[]);
 
-    useEffect(() => {
-        console.log('selectedRecording', selectedRecording);
-    }, [selectedRecording]);
-
+    console.log('uniqueCollections', uniqueCollections);
     return (
         <>
-            <Typography variant="h6">Home</Typography>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs sx={{paddingX: 3}} value={tab} onChange={changeTab} aria-label="basic tabs example">
-                <Tab label="Recordings"/>
-                <Tab label="Channels"/>
-            </Tabs>
-            </Box>
-            <TabPanel value={tab} index={0}>
-                <List>
-                    {recordings.map((recording) => {
-                        const episode = recording.episodeNum?.length > 0 ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : ``;
-                        const secondary = `${episode}${recording.subtitle}`;
-                        return <ListItem disablePadding key={recording.recordingId}>
-                                <ListItemButton 
-                                    onClick={() => {
-                                        console.log('recording', recording);
-                                        setSelectedRecording(recording);
-                                    }}
+            <Container maxWidth="lg">
+                <Typography variant="h6">Home</Typography>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs sx={{paddingX: 3}} value={tab} onChange={changeTab} aria-label="basic tabs example">
+                    <Tab label="Recordings"/>
+                    <Tab label="Channels"/>
+                </Tabs>
+                </Box>
+                <TabPanel value={tab} index={0}>
+                    
+                        {uniqueCollections.map((c, i) => {
+                            const collectionRecordings = recordings.filter(r => r.collectionId === c.collectionId).reverse();
+                            const latestRecording = collectionRecordings.length ? 
+                                new Date(collectionRecordings[0].actualStartTime).toLocaleDateString() :
+                                '';
+                            return <Accordion key={c.collectionId}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
                                 >
-                                    <ListItemText 
-                                        primary={recording.collectionTitle} 
-                                        secondary={secondary}
-                                    />
-                                </ListItemButton>
-                            </ListItem>
-                    })}
-                </List>
-            </TabPanel>
-            <TabPanel value={tab} index={1}>
-                <List>
-                    {channels.map((channel) => {
-                        return <ListItem disablePadding key={channel.stbChannelId}>
-                                <ListItemButton 
-                                    onClick={() => {
-                                        console.log('channel', channel);
-                                        setSelectedChannel(channel);
-                                    }}
-                                >
-                                    <ListItemText 
-                                        primary={channel.channelNumber + ' ' + channel.callSign} 
-                                        secondary={channel.affiliate}
-                                    />
-                                </ListItemButton>
-                            </ListItem>
-                    })}
-                </List>
-            </TabPanel>
-            <Suspense fallback={<div>Loading...</div>}>
+                                    <Chip sx={{mr: 1}} label={collectionRecordings.length}/>
+                                    <Typography>{c.collectionTitle} {latestRecording}</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <List>
+                                        {collectionRecordings.map(recording => {
+                                            const recordingStart = new Date(recording.scheduledStartTime).toLocaleString();
+                                            const episode = recording.episodeNum?.length > 0 ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : ``;
+                                            const secondary = `${episode}${recording.subtitle}`;
+                                            return <ListItem disablePadding key={recording.recordingId}>
+                                                    <ListItemButton 
+                                                        onClick={() => {
+                                                            console.log('recording', recording);
+                                                            setSelectedRecording(recording);
+                                                        }}
+                                                    >
+                                                        <ListItemText 
+                                                            primary={recordingStart} 
+                                                            secondary={secondary}
+                                                        />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                        })}
+                                    </List>
+                                </AccordionDetails>
+                            </Accordion>
+                        })}
+                </TabPanel>
+                <TabPanel value={tab} index={1}>
+                    <List>
+                        {channels.map((channel) => {
+                            return <ListItem disablePadding key={channel.stbChannelId}>
+                                    <ListItemButton 
+                                        onClick={() => {
+                                            console.log('channel', channel);
+                                            setSelectedChannel(channel);
+                                        }}
+                                    >
+                                        <ListItemText 
+                                            primary={channel.channelNumber + ' ' + channel.callSign} 
+                                            secondary={channel.affiliate}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                        })}
+                    </List>
+                </TabPanel>
+            </Container>
+            <Suspense fallback={<div></div>}>
                 <Playback
                     openState={selectedRecording !== null}
                     close={() => {setSelectedRecording(null)}}
                     recording={selectedRecording}
                 />
             </Suspense>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<div></div>}>
                 <ChannelComponent
                     openState={selectedChannel !== null}
                     close={() => {setSelectedChannel(null)}}
