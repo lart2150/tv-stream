@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import videojs from 'video.js';
 import seekButtons from 'videojs-seek-buttons';
 import 'video.js/dist/video-js.css';
-import 'videojs-font/css/videojs-icons.css';
 
 type Props = {
     options : videojs.PlayerOptions;

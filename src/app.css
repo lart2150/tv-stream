@@ -1,18 +1,15 @@
 button.vjs-seek-button.skip-back {
-    font-family: VideoJS;
-    font-weight: normal;
-    font-style: normal; 
+	background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' %3F%3E%3Csvg height='20px' version='1.1' viewBox='0 0 16 20' width='16px' xmlns='http://www.w3.org/2000/svg' xmlns:sketch='http://www.bohemiancoding.com/sketch/ns' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle/%3E%3Cdesc/%3E%3Cdefs/%3E%3Cg fill='none' fill-rule='evenodd' id='Page-1' stroke='none' stroke-width='1'%3E%3Cg fill='%23ffffff' id='Icons-AV' transform='translate(-2.000000  -127.000000)'%3E%3Cg id='replay' transform='translate(2.000000  127.000000)'%3E%3Cpath d='M8 4 L8 0 L3 5 L8 10 L8 6 C11.3 6 14 8.7 14 12 C14 15.3 11.3 18 8 18 C4.7 18 2 15.3 2 12 L0 12 C0 16.4 3.6 20 8 20 C12.4 20 16 16.4 16 12 C16 7.6 12.4 4 8 4 L8 4 Z' id='Shape'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
     cursor: pointer;
 }
-button.vjs-seek-button.skip-back :before {
-    content: "\f11b"; }
+
   
 button.vjs-seek-button.skip-forward {
-    font-family: VideoJS;
-    font-weight: normal;
-    font-style: normal; 
+	background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' %3F%3E%3Csvg height='20px' version='1.1' viewBox='0 0 16 20' width='16px' xmlns='http://www.w3.org/2000/svg' xmlns:sketch='http://www.bohemiancoding.com/sketch/ns' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle/%3E%3Cdesc/%3E%3Cdefs/%3E%3Cg fill='none' fill-rule='evenodd' id='Page-1' stroke='none' stroke-width='1'%3E%3Cg fill='%23ffffff' id='Icons-AV' transform='translate(-2.000000  -127.000000)'%3E%3Cg id='replay' transform='translate(2.000000  127.000000)'%3E%3Cpath d='M8 4 L8 0 L3 5 L8 10 L8 6 C11.3 6 14 8.7 14 12 C14 15.3 11.3 18 8 18 C4.7 18 2 15.3 2 12 L0 12 C0 16.4 3.6 20 8 20 C12.4 20 16 16.4 16 12 C16 7.6 12.4 4 8 4 L8 4 Z' id='Shape'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    transform: scaleX(-1);
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
     cursor: pointer;
-}
-button.vjs-seek-button.skip-forward :before {
-    content: "\f121"; 
 }
