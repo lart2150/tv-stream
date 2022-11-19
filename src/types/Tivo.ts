@@ -1,3 +1,5 @@
+import exp from "constants";
+
 export type Recording = {
     episodic : boolean;
     isNew : boolean;
@@ -64,3 +66,33 @@ export type Channel = {
     type : string;
     stbChannelId : string;
 };
+
+export type Offer = {
+    cc: boolean;
+    channel: Channel;
+    collectionId: string;
+    collectionType: string;
+    contentId: string;
+    duration: number;
+    episodic: boolean;
+    isEpisode: boolean;
+    offerId: string;
+    startTime: string;
+    subtitle: string;
+    title: string;
+    internalRating: [
+        {
+            ratingTypeId: string;
+            type: string;
+            ratingValueId: string;
+        }
+    ],
+    isNew: boolean;
+    type: "offer",
+    videoResolution: 'hd' | 'sd';
+}
+
+export type GridRow = {
+    channel: Channel;
+    offer: Offer[];
+}

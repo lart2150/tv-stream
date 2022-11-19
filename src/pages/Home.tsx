@@ -11,8 +11,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/system/Container';
 import {lazy, useEffect, useState, Suspense} from 'react';
-import type {Channel, Recording} from '@/types/Tivo';
+import type {Channel, GridRow, Recording} from '@/types/Tivo';
 import {useFetch} from '@/util/api';
+import { useQuery } from 'react-query';
 
 const Playback = lazy(async () => import('@/components/Playback'));
 const ChannelComponent = lazy(async () => import('@/components/ChannelComponent'));
@@ -46,11 +47,16 @@ function TabPanel(props : TabPanelProps) {
 const Home = () : JSX.Element => {
     const [recordings, setRecordings] = useState<Recording[]>([]);
     const [uniqueCollections, setUniqueCollections] = useState<Recording[]>([]);
-    const [channels, setChannels] = useState<Channel[]>([]);
     const [selectedRecording, setSelectedRecording] = useState<Recording | null>(null);
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
     const [tab, setTab] = useState<number>(0);
     const fetch = useFetch();
+
+    const { isLoading, error, data: guideData } = useQuery<GridRow[]>('repoData', () =>
+        fetch('/gridSearch').then(async rec => (await rec.json()).gridRow)
+    );
+
+    console.log('guideData', guideData);
 
     const changeTab = (event : React.SyntheticEvent, newValue : number) => {
         setSelectedChannel(null);
@@ -63,11 +69,6 @@ const Home = () : JSX.Element => {
             const rawRecordings = await rec.json() as Recording[];
             setUniqueCollections(rawRecordings.filter((r, i) => rawRecordings.findIndex(or => or.collectionId === r.collectionId) === i));
             setRecordings(rawRecordings);
-        });
-        fetch('/getMyLineup').then(async rec => {
-            const allChannels = await rec.json();
-            const channelList = allChannels.channel as Channel[];
-            setChannels(channelList.filter(c => c.isReceived));
         });
     }, []);
 
@@ -124,17 +125,18 @@ const Home = () : JSX.Element => {
                 </TabPanel>
                 <TabPanel value={tab} index={1}>
                     <List>
-                        {channels.map(channel => {
-                            return <ListItem disablePadding key={channel.stbChannelId}>
+                        {guideData && guideData.map(guideRow => {
+                            const start = new Date(guideRow.offer[0].startTime + "z");
+                            const end = new Date((start.valueOf()) + (guideRow.offer[0].duration * 1000));
+                            return <ListItem disablePadding key={guideRow.channel.channelId}>
                                 <ListItemButton
                                     onClick={() => {
-                                        console.log('channel', channel);
-                                        setSelectedChannel(channel);
+                                        setSelectedChannel(guideRow.channel);
                                     }}
                                 >
                                     <ListItemText
-                                        primary={channel.channelNumber + ' ' + channel.callSign}
-                                        secondary={channel.affiliate}
+                                        primary={guideRow.channel.channelNumber + ' ' + guideRow.channel.callSign}
+                                        secondary={guideRow.offer[0].title + " Until " + end.toLocaleTimeString()}
                                     />
                                 </ListItemButton>
                             </ListItem>;
