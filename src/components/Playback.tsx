@@ -15,6 +15,7 @@ import type videojs from 'video.js';
 import {tivoContext} from './TivoContext';
 import type {MyShows, Recording} from '@/types/Tivo';
 import {useFetch} from '@/util/api';
+import { ErrorModal } from './ErrorModal';
 
 type Props = {
     openState : boolean;
@@ -47,6 +48,7 @@ const Transition = forwardRef(function Transition(
 
 const Playback = ({openState, close, recording} : Props) : JSX.Element => {
     const [stream, setStream] = useState<Stream | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const fetch = useFetch();
     const context = useContext(tivoContext);
 
@@ -65,7 +67,7 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
     };
 
     const closeWindow = () => {
-        if (stream && stream.hlsSession.hlsSessionId) {
+        if (stream && stream.hlsSession?.hlsSessionId) {
             clearSession(stream.hlsSession.hlsSessionId);
         }
 
@@ -76,8 +78,11 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
     useEffect(() => {
         if (recording?.recordingId) {
             getSession(recording.recordingId).then(newStream => {
+                console.log('setStream');
                 setStream(newStream);
-            });
+            }).catch(e => {
+                setErrorMessage('error starting stream');
+            })
         }
 
         return () => {
@@ -120,7 +125,7 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
             </AppBar>
             <Container maxWidth="lg">
                 <Typography variant="h3">{recording.shortTitle} {episode} - {secondary}</Typography>
-                {stream && stream.hlsSession.playlistUri && (
+                {stream && stream.hlsSession?.playlistUri && (
                     <>
                         <VideoJS
                             options={{
@@ -171,6 +176,10 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
                 >Close</Button>
 
             </Container>
+            <ErrorModal 
+                message={errorMessage}
+                handleClose={() => {setErrorMessage(undefined)}}
+                />
         </Dialog>
     );
 };

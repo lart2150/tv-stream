@@ -94,5 +94,5 @@ export type Offer = {
 
 export type GridRow = {
     channel: Channel;
-    offer: Offer[];
+    offer?: Offer[];
 }

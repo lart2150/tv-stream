@@ -15,6 +15,7 @@ import type videojs from 'video.js';
 import {tivoContext} from './TivoContext';
 import type {Channel} from '@/types/Tivo';
 import {useFetch} from '@/util/api';
+import { ErrorModal } from './ErrorModal';
 
 type Props = {
     openState : boolean;
@@ -47,6 +48,7 @@ const Transition = forwardRef(function Transition(
 
 const ChannelComponent = ({openState, close, channel} : Props) : JSX.Element => {
     const [stream, setStream] = useState<Stream | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const fetch = useFetch();
     const context = useContext(tivoContext);
 
@@ -76,9 +78,15 @@ const ChannelComponent = ({openState, close, channel} : Props) : JSX.Element => 
     useEffect(() => {
         if (channel?.stbChannelId) {
             getSession(channel.stbChannelId).then(async newStream => {
+                if (newStream?.hlsSession?.hlsSessionId === undefined) {
+                    setErrorMessage('error starting stream');
+                    return;
+                }
                 await new Promise(r => setTimeout(r, 2000));
                 setStream(newStream);
-            });
+            }).catch(e => {
+                setErrorMessage('error starting stream');
+            })
         }
 
         return () => {
@@ -146,6 +154,10 @@ const ChannelComponent = ({openState, close, channel} : Props) : JSX.Element => 
                 >Close</Button>
 
             </Container>
+            <ErrorModal 
+                message={errorMessage}
+                handleClose={() => {setErrorMessage(undefined)}}
+                />
         </Dialog>
     );
 };

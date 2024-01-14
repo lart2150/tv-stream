@@ -1,6 +1,6 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {Box, Tabs, Tab, Chip} from '@mui/material';
+import {Box, Tabs, Tab, Chip, CardMedia, Card, CardContent, Grid, Link} from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -11,7 +11,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/system/Container';
 import {lazy, useEffect, useState, Suspense} from 'react';
-import type {Channel, GridRow, Recording} from '@/types/Tivo';
+import type {Channel, GridRow, Offer, Recording} from '@/types/Tivo';
 import {useFetch} from '@/util/api';
 import { useQuery } from 'react-query';
 
@@ -126,20 +126,58 @@ const Home = () : JSX.Element => {
                 <TabPanel value={tab} index={1}>
                     <List>
                         {guideData && guideData.map(guideRow => {
-                            const start = new Date(guideRow.offer[0].startTime + "z");
-                            const end = new Date((start.valueOf()) + (guideRow.offer[0].duration * 1000));
-                            return <ListItem disablePadding key={guideRow.channel.channelId}>
-                                <ListItemButton
-                                    onClick={() => {
-                                        setSelectedChannel(guideRow.channel);
-                                    }}
-                                >
-                                    <ListItemText
-                                        primary={guideRow.channel.channelNumber + ' ' + guideRow.channel.callSign}
-                                        secondary={guideRow.offer[0].title + " Until " + end.toLocaleTimeString()}
-                                    />
-                                </ListItemButton>
-                            </ListItem>;
+                            const firstOffer : Offer = guideRow.offer && guideRow.offer.length ? guideRow.offer[0] : {
+                                cc: false,
+                                channel: guideRow.channel,
+                                collectionId: '123',
+                                collectionType: 'string',
+                                contentId: '123',
+                                duration: 600, 
+                                episodic: false,
+                                isEpisode: false,
+                                offerId: '123',
+                                startTime: new Date().toISOString().replace('Z', ''),
+                                subtitle: 'Missing',
+                                title: 'No Show',
+                                internalRating: [        {
+                                    ratingTypeId: 'a',
+                                    type: 'a',
+                                    ratingValueId: 'a',
+                                }],
+                                isNew: false,
+                                type: "offer",
+                                videoResolution: 'sd',
+                            };
+                            const start = new Date(firstOffer.startTime + "z");
+                            const end = new Date((start.valueOf()) + (firstOffer.duration ?? 1 * 1000));
+                            return <Card sx={{ m: 1}}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} md={8}>
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="div">
+                                                {guideRow.channel.channelNumber + ' ' + guideRow.channel.callSign}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                <p>{firstOffer.title + " Until " + end.toLocaleTimeString()}</p>
+                                                <p>{firstOffer.subtitle}</p>
+                                            </Typography>
+                                            <Link 
+                                                onClick={() => {
+                                                    setSelectedChannel(guideRow.channel);
+                                                }}
+                                                href="#">
+                                                Watch Now
+                                            </Link>
+                                        </CardContent>
+                                    </Grid>
+                                    <Grid item xs={12} md={4}>
+                                        <img 
+                                            style={{maxHeight: '150px'}}
+                                            src={`http://i.tivo.com/images-production/images/${firstOffer.contentId}/episodeBanner_544x306?fallbackPolicy=episodeToSeries`}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Card>
                         })}
                     </List>
                 </TabPanel>
