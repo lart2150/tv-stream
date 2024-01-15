@@ -16,6 +16,7 @@ import {tivoContext} from './TivoContext';
 import type {MyShows, Recording} from '@/types/Tivo';
 import {useFetch} from '@/util/api';
 import { ErrorModal } from './ErrorModal';
+import Player from 'video.js/dist/types/player';
 
 type Props = {
     openState : boolean;
@@ -140,20 +141,24 @@ const Playback = ({openState, close, recording} : Props) : JSX.Element => {
                                     0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5,
                                 ],
                                 liveui: true,
+                                skipButtons: {
+                                    forward: 30,
+                                    backward: 10,
+                                },
                                 userActions: {
-                                    hotkeys: function (event) {
+                                    hotkeys: function (event: { code: any; which: any; }) {
                                         console.log('this', this);
-                                        const player = this as videojs.Player;
+                                        const player = this as unknown as Player;
 
                                         switch (event.code) {
                                             case 'space':
                                                 player.pause();
                                                 break;
                                             case 'ArrowLeft':
-                                                player.currentTime(player.currentTime() - 30);
+                                                player.currentTime(player.currentTime() ?? 0 - 30);
                                                 break;
                                             case 'ArrowRight':
-                                                player.currentTime(player.currentTime() + 30);
+                                                player.currentTime(player.currentTime() ?? 0 + 30);
                                                 break;
                                         }
 

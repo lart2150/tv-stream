@@ -1,16 +1,16 @@
 import { useEffect, useRef } from 'react';
 import videojs from 'video.js';
-import seekButtons from 'videojs-seek-buttons';
+import Player from 'video.js/dist/types/player';
 import 'video.js/dist/video-js.css';
 
 type Props = {
-    options : videojs.PlayerOptions;
-    onReady ?: (player : videojs.Player) => void;
+    options : any;
+    onReady ?: (player : Player) => void;
 };
 
 const VideoJS = (props : Props) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const playerRef = useRef<videojs.Player | null>(null);
+    const playerRef = useRef<Player | null>(null);
     const {options, onReady} = props;
 
     useEffect(() => {
@@ -24,13 +24,6 @@ const VideoJS = (props : Props) => {
                 videojs.log('player is ready');
                 onReady && onReady(player);
             });
-
-            if (options.liveui) {
-              player.seekButtons({
-                forward: 30,
-                back: 10
-              })
-            }
         } else {
             // const player = playerRef.current;
 
