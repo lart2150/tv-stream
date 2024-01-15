@@ -1,6 +1,6 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {Box, Tabs, Tab, Chip, CardMedia, Card, CardContent, Grid, Link} from '@mui/material';
+import {Box, Tabs, Tab, Chip, CardMedia, Card, CardContent, Grid, Link, duration} from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -56,8 +56,6 @@ const Home = () : JSX.Element => {
         fetch('/gridSearch').then(async rec => (await rec.json()).gridRow)
     );
 
-    console.log('guideData', guideData);
-
     const changeTab = (event : React.SyntheticEvent, newValue : number) => {
         setSelectedChannel(null);
         setSelectedRecording(null);
@@ -87,7 +85,7 @@ const Home = () : JSX.Element => {
                     {uniqueCollections.map((c, i) => {
                         const collectionRecordings = recordings.filter(r => r.collectionId === c.collectionId).reverse();
                         const latestRecording = collectionRecordings.length
-                            ? new Date(collectionRecordings[0].actualStartTime).toLocaleDateString()
+                            ? new Date(collectionRecordings[0].actualStartTime + "z").toLocaleDateString()
                             : '';
                         return <Accordion key={c.collectionId}>
                             <AccordionSummary
@@ -101,7 +99,7 @@ const Home = () : JSX.Element => {
                             <AccordionDetails>
                                 <List>
                                     {collectionRecordings.map(recording => {
-                                        const recordingStart = new Date(recording.scheduledStartTime).toLocaleString();
+                                        const recordingStart = new Date(recording.scheduledStartTime + "z").toLocaleString();
                                         const episode = recording.episodeNum?.length !== undefined ? `S${recording.seasonNumber} E${recording.episodeNum.join(',')} ` : '';
                                         const secondary = `${episode}${recording.subtitle}`;
                                         return <ListItem disablePadding key={recording.recordingId}>
@@ -132,7 +130,7 @@ const Home = () : JSX.Element => {
                                 collectionId: '123',
                                 collectionType: 'string',
                                 contentId: '123',
-                                duration: 600, 
+                                duration: 3600, 
                                 episodic: false,
                                 isEpisode: false,
                                 offerId: '123',
@@ -149,7 +147,7 @@ const Home = () : JSX.Element => {
                                 videoResolution: 'sd',
                             };
                             const start = new Date(firstOffer.startTime + "z");
-                            const end = new Date((start.valueOf()) + (firstOffer.duration ?? 1 * 1000));
+                            const end = new Date(start.valueOf() + (firstOffer.duration  * 1000));
                             return <Card sx={{ m: 1}}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={8}>
