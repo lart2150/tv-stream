@@ -3,12 +3,13 @@ import exp from "constants";
 export type Recording = {
     episodic : boolean;
     isNew : boolean;
-    shortTitle : string;
+    shortTitle ?: string;
     subtitle : string;
+    title: string
     description : string;
     seasonNumber : number;
 
-    collectionTitle : string;
+    collectionTitle ?: string;
     episodeNum ?: string[];
     bodyId : string;
     collectionId : string;

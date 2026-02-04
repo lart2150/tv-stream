@@ -46,7 +46,7 @@ function TabPanel(props : TabPanelProps) {
 
 const Home = () : JSX.Element => {
     const [recordings, setRecordings] = useState<Recording[]>([]);
-    const [uniqueCollections, setUniqueCollections] = useState<Recording[]>([]);
+    const [uniqueTitles, setUniqueTitles] = useState<Recording[]>([]);
     const [selectedRecording, setSelectedRecording] = useState<Recording | null>(null);
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
     const [tab, setTab] = useState<number>(0);
@@ -65,7 +65,14 @@ const Home = () : JSX.Element => {
     useEffect(() => {
         fetch('/getMyShows').then(async rec => {
             const rawRecordings = await rec.json() as Recording[];
-            setUniqueCollections(rawRecordings.filter((r, i) => rawRecordings.findIndex(or => or.collectionId === r.collectionId) === i));
+            setUniqueTitles(rawRecordings
+                .filter((r, i) =>
+                    rawRecordings.findIndex(or => {
+                        const orTitle = (or.collectionTitle || or.title);
+                        const rTitle = (r.collectionTitle || r.title);
+                        return orTitle === rTitle
+                    }) === i)
+                );
             setRecordings(rawRecordings);
         });
     }, []);
@@ -82,19 +89,19 @@ const Home = () : JSX.Element => {
                 </Box>
                 <TabPanel value={tab} index={0}>
 
-                    {uniqueCollections.map((c, i) => {
-                        const collectionRecordings = recordings.filter(r => r.collectionId === c.collectionId).reverse();
+                    {uniqueTitles.map((c, i) => {
+                        const collectionRecordings = recordings.filter(r => (r.collectionTitle || r.title) === (c.collectionTitle || c.title)).reverse();
                         const latestRecording = collectionRecordings.length
-                            ? new Date(collectionRecordings[0].actualStartTime + "z").toLocaleDateString()
+                            ? new Date(collectionRecordings[0].scheduledStartTime + "z").toLocaleDateString()
                             : '';
-                        return <Accordion key={c.collectionId}>
+                        return <Accordion key={c.collectionTitle || c.title}>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon/>}
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
                             >
                                 <Chip sx={{mr: 1}} label={collectionRecordings.length}/>
-                                <Typography>{c.collectionTitle} {latestRecording}</Typography>
+                                <Typography>{c.collectionTitle || c.title} {latestRecording}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <List>
