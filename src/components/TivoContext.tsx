@@ -1,6 +1,6 @@
 import type {ReactNode} from 'react';
 import {createContext, useEffect, useState} from 'react';
-import {z} from 'zod';
+import {z} from 'zod/mini';
 
 type Props = {
     children ?: ReactNode;

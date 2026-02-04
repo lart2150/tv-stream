@@ -157,7 +157,7 @@ const Home = () : JSX.Element => {
                             const end = new Date(start.valueOf() + (firstOffer.duration  * 1000));
                             return <Card sx={{ m: 1}}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} md={8}>
+                                    <Grid size={{ xs: 12, md: 8 }}>
                                         <CardContent>
                                             <Typography gutterBottom variant="h5" component="div">
                                                 {guideRow.channel.channelNumber + ' ' + guideRow.channel.callSign}
@@ -175,7 +175,7 @@ const Home = () : JSX.Element => {
                                             </Link>
                                         </CardContent>
                                     </Grid>
-                                    <Grid item xs={12} md={4}>
+                                    <Grid size={{ xs: 12, md: 4 }}>
                                         <img 
                                             style={{maxHeight: '150px'}}
                                             src={`http://i.tivo.com/images-production/images/${firstOffer.contentId}/episodeBanner_544x306?fallbackPolicy=episodeToSeries`}

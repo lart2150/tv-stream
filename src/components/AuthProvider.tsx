@@ -17,8 +17,10 @@ export const AuthProvider = ({children} : Props) => {
     return <Auth0Provider
         domain={context.domain}
         clientId={context.clientID}
-        redirectUri={window.location.origin}
-        audience={context.audience}
+        authorizationParams={{
+            redirect_uri: window.location.origin,
+            audience: context.audience,
+        }}
     >
         {children}
     </Auth0Provider>;
